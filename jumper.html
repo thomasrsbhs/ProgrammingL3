@@ -1,0 +1,93 @@
+<!doctype html>
+
+<head>
+  <title>Doodle who jumps</title>
+  <script src="jumper.js"></script>
+</head>
+
+<body>
+  <canvas id="gameCanvas" width="800" height="600"></canvas>
+</body>
+<script>
+  var canvas, canvasContext;
+
+  window.onload = function () {
+    canvas = document.getElementById('gameCanvas');
+    canvasContext = canvas.getContext('2d');
+
+    document.addEventListener('keydown', keyPressed);
+    document.addEventListener('keyup', keyReleased);
+
+    setInterval(mainloop, 1000 / 50);
+  }
+  // player vars
+  var pXpos = 380;
+  var pYpos = 580;
+  var pXspeed = 5;
+  var pYspeed = 5;
+  const P_SIZE = 20;
+  
+  // key codes
+  const UP_KEY = 87;
+  const LEFT_KEY = 65;
+  const RIGHT_KEY = 68;
+  const SPACE_KEY = 32;
+  var upPressed = false;
+  var downPressed = false;
+  var leftPressed = false;
+  var rightPressed = false;
+  var spacePressed = false;
+
+  var player = new Player(pXpos, pYpos, P_SIZE, P_SIZE, 'red', pXspeed, pYspeed);
+
+  var setUp = true;
+
+  function mainloop() {
+  
+    colorRect(0, 0, canvas.width, canvas.height, 'black'); // bg
+    player.drawRect(); // player
+    player.playerMove();
+  }
+
+
+  function keyPressed(evt) {
+    if (evt.keyCode == UP_KEY) {
+      upPressed = true;
+    }
+    if (evt.keyCode == DOWN_KEY) {
+      downPressed = true;
+    }
+    if (evt.keyCode == LEFT_KEY) {
+      leftPressed = true;
+    }
+    if (evt.keyCode == RIGHT_KEY) {
+      rightPressed = true;
+    }
+    if (evt.keyCode == SPACE_KEY) {
+      spacePressed = true;
+    }
+  }
+
+  function keyReleased(evt) {
+    if (evt.keyCode == UP_KEY) {
+      upPressed = false;
+    }
+    if (evt.keyCode == DOWN_KEY) {
+      downPressed = false;
+    }
+    if (evt.keyCode == LEFT_KEY) {
+      leftPressed = false;
+    }
+    if (evt.keyCode == RIGHT_KEY) {
+      rightPressed = false;
+    }
+    if (evt.keyCode == SPACE_KEY) {
+      spacePressed = false;
+    }
+  }
+
+  function colorRect(x, y, w, h, c) {
+    canvasContext.fillStyle = c;
+    canvasContext.fillRect(x, y, w, h);
+  }
+</script> 
