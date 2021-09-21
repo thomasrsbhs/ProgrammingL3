@@ -29,10 +29,10 @@ class Player {
   playerMove() {
 
     this.y += this.yVel; //gravity
-    this.thrust = -12.5 ;
-    this.yVel += 0.4;
+    this.thrust = -8;
+    this.yVel += 0.25;
     // this.thrust += -5; //gravity
-    console.log(this.yVel)
+    // console.log(this.yVel)
 
     if(rightPressed) {
       this.x += this.xSpeed;
@@ -57,13 +57,19 @@ class Player {
       // this.yVel = this.thrust;
       // this.ySpeed = 5;
     }
-    if(spacePressed = false && this.y > 0){
-      this.ySpeed = 0;
-      this.thrust = 0;
-      this.yVel = 0;
-      // this.y += this.ySpeed;
+    // if(spacePressed = false && this.y <= this.h){
+    //   this.ySpeed = 0;
+    //   this.thrust = 0;
+    //   this.yVel = 0;
+    //   // this.y += this.ySpeed;
       
+    // }
+
+    if (this.y > canvas.height - this.h) {
+
+      this.yVel = thrust;
+      this.ySpeed = 3;
     }
 
-  }
+  } //end func
 }
