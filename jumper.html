@@ -4,7 +4,7 @@
   <style>
     body {
       background-color: rgb(23, 238, 173);
-      padding: 10px 10px;
+      margin: 3%;
     }
 
     canvas {
@@ -12,15 +12,37 @@
       margin: auto;
     }
 
+    .button {
+            padding: 1.5px;
+            border-radius: 25px;
+            background-color: red;
+            border: 2px solid black;
+            color: black;
+            text-align: center;
+            width: 15%;
+            font-size: 15px;
+            font-weight: bold;
+            font-family: 'century gothic';
+            display: center;
+            justify-content: center;
+    
+    }
+
+    button:hover {
+        background-color: red;
+    }
+
   </style>
 
   <title>Doodle who jumps</title>
   <script src="jumper.js"></script>
-  <script src="enemy.js"></script>
+  <script src="platform.js"></script>
 </head>
 
 <body>
   <canvas id="gameCanvas" width="800" height="600"></canvas>
+  <button onClick="location.reload();">Restart</button>   <!-- refresh the page --> 
+
 </body>
 <script>
   var canvas, canvasContext;
@@ -34,9 +56,47 @@
 
     setInterval(mainloop, 1000 / 50);
   }
-  // player vars
-  var pXpos = 375;
-  var pYpos = 575;
+
+  var userName = ''; //username text prompt, player enters their name here
+        var userPass = false; //case for false entries in name 
+        while (userPass == false) {
+            userName = prompt("What is your name? Max length 10", "barry");
+            if (userName != null && userName != '') {
+                if (userName.length <= 10) { //text limit at 10, so end screen isn't too big and the name fits in the prompt bar
+
+                    userPass = true;
+                }
+            }
+
+        }
+        // difficulty prompt
+        var difficulty = '';
+        var difficultyPass = false;
+        while (difficultyPass == false) {
+            difficulty = prompt("Select the difficulty: easy, medium, hard", "easy");
+
+            difficulty = difficulty.toLowerCase()
+
+            if (difficulty == 'easy' || difficulty == 'medium' || difficulty == 'hard') {
+                difficultyPass = true; // if statement is compatable with criteria then run as true and game will run
+            }
+        } 
+
+        platformCount = 0     
+
+        if(difficulty == 'easy'){
+          platformCount = 10;
+        }
+        if(difficulty == 'medium'){
+          platformCount = 8;
+        }
+        if(difficulty == 'hard'){
+          platformCount = 5;
+        }
+
+  // player vars/const
+  var pXpos = 0;
+  var pYpos = 0;
   var pXspeed = 5;
   var pYspeed = 5;
   const P_SIZE = 25;
@@ -60,42 +120,51 @@
 
   var setUp = true;
 
+        var score = 0;
+
   function mainloop() {
     if (setUp) {
-      for (var i = 0; i < 10; i++) {
-        createEnemy();
+      pXpos = canvas.width/2;
+      for (var i = 0; i < platformCount; i++) {
+        createPlatform();
       }
       setUp = false;
     }
+    score++;
     colorRect(0, 0, canvas.width, canvas.height, 'black'); // bg
     player.drawRect(); // player
     player.playerMove();
+    colorText(score, 50, 50, "20px arial", "white"); //score ticker
+
     
-      if (enemies.length > 0) {
-          enemies.forEach(function (enemy, i, array) {
-            enemy.drawRect();
-            enemy.enemyMove();
-            if(enemy.playerDeath()){
-              console.log('dead');
-            }
+      if (platforms.length > 0) {
+          platforms.forEach(function (platform, i, array) {
+            platform.drawRect();
+            platform.platformMove();
+            // if(platform.playerDeath() == true){
+            //   console.log('dead');
+            // }
           }); // end foreach
         } // end if 
-  }
+  } // end of func
 
-  var enemies = [];
+  var platforms = []; // platform array
 
-   function createEnemy(){
-    // enemy vars
-    var eSize = Math.floor(Math.random() * (40 - 20) + 20);
-    var eYpos = eSize;
-    var eXpos = Math.floor(Math.random() * (canvas.width - eSize));
-    var eXspeed = Math.floor(Math.random() * (12 - 3) + 3);
-    var eYspeed = Math.floor(Math.random() * (12 - 3) + 3);
+   function createPlatform() {
+    // platform vars
+    var pWidth = 100;
+    var pHeight = 10;
+   
+    var pYpos = pWidth;
+    var pXpos = Math.floor(Math.random() * (canvas.width - pWidth));
+    // var pXspeed = Math.floor(Math.random() * (12 - 3) + 3);
+    var pYspeed = Math.floor(Math.random() * (12 - 3) + 3);
 
-    // create enemy class with vars
-    var enemy = new Enemy(eXpos, eYpos, eSize, eSize, 'purple', eXspeed, eYspeed);
-    // add enemy to enemies array
-    enemies.push(enemy); 
+    // create platform class with vars
+    var platform = new Platform(pXpos, pYpos, pWidth, pHeight, 'purple', pXspeed, pYspeed);
+    // add platform to platforms array
+    platforms.push(platform); 
+
   } // end func
 
 
@@ -107,10 +176,10 @@
     if (evt.keyCode == RIGHT_KEY) {
       rightPressed = true;
     }
-    if (evt.keyCode == SPACE_KEY) {
-      spacePressed = true;
-    }
-  }
+    // if (evt.keyCode == SPACE_KEY) {
+    //   spacePressed = true;
+    // }
+  } // end of func
 
   function keyReleased(evt) {
     if (evt.keyCode == LEFT_KEY) {
@@ -119,15 +188,21 @@
     if (evt.keyCode == RIGHT_KEY) {
       rightPressed = false;
     }
-    if (evt.keyCode == SPACE_KEY) {
-      spacePressed = false;
-    }
+    // if (evt.keyCode == SPACE_KEY) {
+    //   spacePressed = false;
+    // }
   } // end of func
-
-
 
   function colorRect(x, y, w, h, c) {
     canvasContext.fillStyle = c;
     canvasContext.fillRect(x, y, w, h);
-  }
+  } //end of func
+
+  function colorText(msg, x, y, f, c){ // draws messages (score, end game etc.)
+    canvasContext.filstyle = c;
+    canvasContext.font = f;
+    canvasContext.fillText(msg, x, y);
+
+
+  } //end func
 </script>
