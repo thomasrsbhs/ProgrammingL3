@@ -2,48 +2,161 @@
 
 <head>
   <style>
+
+    * {
+      margin: 0px;
+      padding: 0px;
+    }
+
+    
     body {
       background-color: rgb(23, 238, 173);
-      margin: 3%;
+      /* padding: 10px 10px; */
+    }
+
+    h1 {
+      font-family: 'century gothic';
+      color: white;
+      font-size: 1.7vw;
+      text-align: center;
+      display: centre;
+    }
+
+    h2 {
+      font-family: 'century gothic';
+      font-size: 1.4vw;
+      text-align: center;
+      color: lightgray;
+    }
+
+    p {
+      color: red;
+    }
+
+    .underNav {
+    text-align: center;
+    /* width: 100%; */
+    margin-top: 10px;
+    display: grid;
+    grid-column: 2/4;
+    grid-row: auto;
+    align-self: stretch;
+    justify-content: center;
+    }
+
+    .title {
+      margin-left: 25%;
+      margin-bottom: 1%;
+      width: 50%;
+      text-align: center;
+      color: white;
+      background-color: rgb(206, 14, 14);
+      align-self: center;
+      justify-self: center;
+      display: inline-block;
     }
 
     canvas {
-      display: block;
+      display: grid;
       margin: auto;
     }
 
-    .button {
-            padding: 1.5px;
-            border-radius: 25px;
-            background-color: red;
-            border: 2px solid black;
-            color: black;
-            text-align: center;
-            width: 15%;
-            font-size: 15px;
-            font-weight: bold;
-            font-family: 'century gothic';
-            display: center;
-            justify-content: center;
-    
+    button {
+      padding: 1.5px;
+      background-color: white;
+      border: 2px solid black;
+      color: black;
+      text-align: center;
+      width: 15%;
+      font-size: 15px;
+      font-weight: bold;
+      font-family: 'century gothic';
+      display: block;
+      margin: 10px auto;
+
     }
+
+    body {
+      margin: 1%;
+      grid-template-columns: 1fr 2fr 1fr;
+      grid-template-rows: 1fr 1fr 1fr;
+    }
+
+    .left {
+      margin: 1%;
+      padding: 1%;
+      border: 2px solid white;
+      background-color: darkgray;
+      height: 90%;
+      width: 10%;
+      display: grid;
+      grid-column: 1/5;
+      grid-row: 2/3;
+      /* background-color: #2196F3; */
+      padding: 10px;
+      text-align: center;
+      font-family: 'century gothic';
+      align-self: center;
+      justify-self: center;
+    }
+
+    .middle {
+      display: grid;
+      grid-column: 2/4;
+      grid-row: auto;
+    }
+
+    .right {
+      /* margin: 1%;
+      padding: 1%; */
+      border: 2px solid white;
+      background-color: darkgray;
+      height: 90%;
+      width: 10%;
+      display: grid;
+      grid-column: 4/4;
+      grid-row: 3/3;
+      /* background-color: #2196F3; */
+      padding: 10px;
+      text-align: center;
+      font-family: 'century gothic';
+      align-self: center;
+      justify-self: center;
+    }
+
+
 
     button:hover {
-        background-color: red;
+      background-color: red;
     }
-
   </style>
-
-  <title>Doodle who jumps</title>
-  <script src="jumper.js"></script>
-  <script src="platform.js"></script>
 </head>
 
+<title>Doodle who jumps</title>
+<script src="player.js"></script>
+<script src="platform.js"></script>
+
+<!-- <div class="container"></div> -->
+<h1 class="title">Jump on the platforms</h1>
 <body>
-  <canvas id="gameCanvas" width="800" height="600"></canvas>
-  <button onClick="location.reload();">Restart</button>   <!-- refresh the page --> 
+
+<!-- <div class="underNav">
+  
+</div> -->
+
+  <canvas class="middle" id="gameCanvas" width="700" height="550"></canvas>
+  <div class="left">
+    <h2>WASD to move</h2>
+  </div>
+  <div class="right">
+    <h2>Try not to fall</h2>
+  </div>
+  <button onClick="location.reload();">Restart</button> <!-- refresh the page -->
+
+
 
 </body>
+</div>
 <script>
   var canvas, canvasContext;
 
@@ -54,45 +167,9 @@
     document.addEventListener('keydown', keyPressed);
     document.addEventListener('keyup', keyReleased);
 
-    setInterval(mainloop, 1000 / 50);
+    setInterval(mainloop, 1000 / 60);
   }
 
-  var userName = ''; //username text prompt, player enters their name here
-        var userPass = false; //case for false entries in name 
-        while (userPass == false) {
-            userName = prompt("What is your name? Max length 10", "barry");
-            if (userName != null && userName != '') {
-                if (userName.length <= 10) { //text limit at 10, so end screen isn't too big and the name fits in the prompt bar
-
-                    userPass = true;
-                }
-            }
-
-        }
-        // difficulty prompt
-        var difficulty = '';
-        var difficultyPass = false;
-        while (difficultyPass == false) {
-            difficulty = prompt("Select the difficulty: easy, medium, hard", "easy");
-
-            difficulty = difficulty.toLowerCase()
-
-            if (difficulty == 'easy' || difficulty == 'medium' || difficulty == 'hard') {
-                difficultyPass = true; // if statement is compatable with criteria then run as true and game will run
-            }
-        } 
-
-        platformCount = 0     
-
-        if(difficulty == 'easy'){
-          platformCount = 10;
-        }
-        if(difficulty == 'medium'){
-          platformCount = 8;
-        }
-        if(difficulty == 'hard'){
-          platformCount = 5;
-        }
 
   // player vars/const
   var pXpos = 0;
@@ -100,6 +177,7 @@
   var pXspeed = 5;
   var pYspeed = 5;
   const P_SIZE = 25;
+
   var yVel = 0; //gravity
   var thrust = -5; // gravity speed
 
@@ -116,89 +194,197 @@
   var rightPressed = false;
   var spacePressed = false;
 
-  var player = new Player(pXpos, pYpos, P_SIZE, P_SIZE, 'red', pXspeed, pYspeed, yVel, thrust);
+  //game vars
+  var score = 0;
+  var lives = 3;
+  var deaths = 0;
 
+  // var gameRun = true;
   var setUp = true;
+  var totalPlatforms = 6;
 
-        var score = 0;
+  //arrays
+  var platforms = [];
+
+
+
+
+  var player = new
+  Player(pXpos, pYpos, P_SIZE, P_SIZE, 'cyan', pXspeed, pYspeed, yVel, thrust);
+
+
+
+
+  var userName = ''; //username text prompt, player enters their name here
+  var userPass = false; //case for false entries in name 
+  while (userPass == false) {
+    userName = prompt("Please enter your name to begin! Max length 10", "Doodle");
+    if (userName != null && userName != '') {
+      if (userName.length <= 10) { //text limit at 10, so end screen isn't too big and the name fits in the prompt bar
+
+        userPass = true;
+      }
+    }
+
+  } // end username string
+  // difficulty prompt
+  var difficulty = '';
+  var difficultyPass = false;
+  while (difficultyPass == false) {
+    difficulty = prompt("Select your difficulty!: easy, medium, hard", "easy");
+    if (difficulty == null) {
+      difficulty = '';
+    }
+
+    difficulty = difficulty.toLowerCase()
+
+    if (difficulty.toLowerCase() == 'easy' || difficulty.toLowerCase() == 'medium' || difficulty.toLowerCase() ==
+      'hard') {
+      difficultyPass = true; // if statement is compatable with criteria then run as true and game will run
+    }
+
+    if (difficulty != null && difficulty != '') {
+      difficultyPass = true;
+    }
+
+  } //end difficulty string
+
+  // difficutly changes for easy, medium, hard 
+
+  if (difficulty == 'easy') { //easy 
+    totalPlatforms = 7;
+    lives = 4;
+  }
+
+  if (difficulty == 'medium') { //medium
+    totalPlatforms = 5;
+    lives = 3;
+
+    if (deaths <= 2) {
+      gameRun = true;
+    } else {
+      gameRun = false;
+    }
+  }
+
+  if (difficulty == 'hard') { //hard
+    totalPlatforms = 4;
+    lives = 2;
+
+    if (deaths <= 1) {
+      gameRun = true;
+    } else {
+      gameRun = false;
+    }
+  }
+
+
+
 
   function mainloop() {
     if (setUp) {
-      pXpos = canvas.width/2;
-      for (var i = 0; i < platformCount; i++) {
-        createPlatform();
+      player.x = canvas.width / 2 - P_SIZE;
+      pYpos = 0 - P_SIZE;
+      
+
+      for (var i = 0; i < totalPlatforms; i++) {
+        makePlatform();
       }
       setUp = false;
     }
-    score++;
-    colorRect(0, 0, canvas.width, canvas.height, 'black'); // bg
-    player.drawRect(); // player
-    player.playerMove();
-    colorText(score, 50, 50, "20px arial", "white"); //score ticker
+    // score++; // score count up
+    colorRect(0, 0, canvas.width, canvas.height, 'black'); // canvas proportions
+    // colorRect(pXpos, pYpos, P_SIZE, P_SIZE, 'red'); // player proportions
+    player.draw(); // player draw
+    player.Move(); // player movement
 
-    
-      if (platforms.length > 0) {
-          platforms.forEach(function (platform, i, array) {
-            platform.drawRect();
-            platform.platformMove();
-            // if(platform.playerDeath() == true){
-            //   console.log('dead');
-            // }
-          }); // end foreach
-        } // end if 
-  } // end of func
+    colorText('Score: ' + score, canvas.width * 0.01, 20, '15px century gothic,', 'red'); //score display
+    colorText('Lives: ' + lives, canvas.width * 0.915, 20, '15px century gothic', 'blue'); //lives display
+
+
+
+    if (platforms.length > 0) {
+      platforms.forEach(function (platform, i, array) {
+        platform.draw();
+        platform.Move();
+        platform.hit();
+      });
+    } // end if 
+
+
+    if (userName > 10) { // username character limit
+      userName == false;
+    }
+
+    if (difficulty != 'easy', 'medium', 'hard') { //runs the false statement so that unrecognised text is rejected 
+      difficultyPass == false;
+
+    } else { // gameEnd screen when gameRun = false
+      colorRect(0, 0, canvas.width, canvas.height, 'black');
+      colorText(' Game over ' + userName + ' your score was ' + score, canvas.width * 0.125, canvas.height / 2,
+        '17.5px century gothic', 'red');
+    }
+  } // end of func mainloop
+
 
   var platforms = []; // platform array
+  var enemyCounter = 0;
 
-   function createPlatform() {
-    // platform vars
-    var pWidth = 100;
-    var pHeight = 10;
-   
-    var pYpos = pWidth;
-    var pXpos = Math.floor(Math.random() * (canvas.width - pWidth));
-    // var pXspeed = Math.floor(Math.random() * (12 - 3) + 3);
-    var pYspeed = Math.floor(Math.random() * (12 - 3) + 3);
+  function makePlatform() { // make platform function 
+    var totalPlatforms = '';
 
-    // create platform class with vars
-    var platform = new Platform(pXpos, pYpos, pWidth, pHeight, 'purple', pXspeed, pYspeed);
-    // add platform to platforms array
-    platforms.push(platform); 
+    const PLAT_SIZE = 20;
+    const gap = 100;
+    var platPos = Math.floor(Math.random() * 6) + 1; // 1-7 platform spawn positions
+
+    var platWidth = 70;
+    var platHeight = 10;
+    var platYpos = 0 - PLAT_SIZE;
+    var platXpos = enemyCounter * PLAT_SIZE + gap * enemyCounter;
+    // var platXpos = Math.floor(Math.random() * (canvas.width - platWidth));
+    var platYspeed = Math.floor(Math.random() * (3 - 1) + 3);
+
+    enemyCounter++;
+
+    var platform = new
+    Platform(platXpos, platYpos, platWidth, platHeight, 'red', platYspeed); //platform class
+
+    platforms.push(platform); //platform array
 
   } // end func
 
 
 
-  function keyPressed(evt) {
+  function keyPressed(evt) { // recognises when key is pressed 
     if (evt.keyCode == LEFT_KEY) {
       leftPressed = true;
     }
     if (evt.keyCode == RIGHT_KEY) {
-      rightPressed = true;
+      rightPressed = true; // runs key press as true 
     }
-    // if (evt.keyCode == SPACE_KEY) {
+    // if (evt.keyCode == SPACE_KEY) { //space key pressed
     //   spacePressed = true;
     // }
   } // end of func
 
-  function keyReleased(evt) {
+  function keyReleased(evt) { // recognises when key is released 
     if (evt.keyCode == LEFT_KEY) {
-      leftPressed = false;
+      leftPressed = false; // when key released press is now false 
     }
     if (evt.keyCode == RIGHT_KEY) {
       rightPressed = false;
     }
-    // if (evt.keyCode == SPACE_KEY) {
-    //   spacePressed = false;
-    // }
+    if (evt.keyCode == SPACE_KEY) { //space key released
+      spacePressed = false;
+    }
   } // end of func
 
-  function colorRect(x, y, w, h, c) {
+  function colorRect(x, y, w, h, c) { //draws player and enemy squares 
     canvasContext.fillStyle = c;
     canvasContext.fillRect(x, y, w, h);
   } //end of func
 
-  function colorText(msg, x, y, f, c){ // draws messages (score, end game etc.)
+  function colorText(msg, x, y, f, c) { // draws messages (score, end game etc.)
     canvasContext.filstyle = c;
     canvasContext.font = f;
     canvasContext.fillText(msg, x, y);
