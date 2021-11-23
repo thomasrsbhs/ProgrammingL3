@@ -49,6 +49,11 @@ class Player { //player class vars for html
       this.x = canvas.width / 2 - this.h;
       lives -= 1; // loose lives when fall below screen
       deaths++;
+
+      if (deaths >= 3 && lives <= 0) {
+        gameRun = false;
+    } // game end on deaths for easy
+
       // this.yVel = this.thrust;
       // this.ySpeed = 5;
     }

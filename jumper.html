@@ -2,13 +2,12 @@
 
 <head>
   <style>
-
     * {
       margin: 0px;
       padding: 0px;
     }
 
-    
+
     body {
       background-color: rgb(23, 238, 173);
       /* padding: 10px 10px; */
@@ -34,14 +33,14 @@
     }
 
     .underNav {
-    text-align: center;
-    /* width: 100%; */
-    margin-top: 10px;
-    display: grid;
-    grid-column: 2/4;
-    grid-row: auto;
-    align-self: stretch;
-    justify-content: center;
+      text-align: center;
+      /* width: 100%; */
+      margin-top: 10px;
+      display: grid;
+      grid-column: 2/4;
+      grid-row: auto;
+      align-self: stretch;
+      justify-content: center;
     }
 
     .title {
@@ -138,9 +137,10 @@
 
 <!-- <div class="container"></div> -->
 <h1 class="title">Jump on the platforms</h1>
+
 <body>
 
-<!-- <div class="underNav">
+  <!-- <div class="underNav">
   
 </div> -->
 
@@ -199,7 +199,7 @@
   var lives = 3;
   var deaths = 0;
 
-  // var gameRun = true;
+  var gameRun = true;
   var setUp = true;
   var totalPlatforms = 6;
 
@@ -236,15 +236,15 @@
       difficulty = '';
     }
 
-    difficulty = difficulty.toLowerCase()
+    difficulty = difficulty.toLowerCase() //converts user enetered text to lowercase to negate error/variation
 
     if (difficulty.toLowerCase() == 'easy' || difficulty.toLowerCase() == 'medium' || difficulty.toLowerCase() ==
       'hard') {
       difficultyPass = true; // if statement is compatable with criteria then run as true and game will run
     }
 
-    if (difficulty != null && difficulty != '') {
-      difficultyPass = true;
+    if (difficulty.toLowerCase = null && difficulty.toLowerCase != '') { //stops inproper values from running (numbers or symbols etc.)
+      difficultyPass = false;
     }
 
   } //end difficulty string
@@ -253,14 +253,14 @@
 
   if (difficulty == 'easy') { //easy 
     totalPlatforms = 7;
-    lives = 4;
+    lives = 3;
   }
 
   if (difficulty == 'medium') { //medium
     totalPlatforms = 5;
-    lives = 3;
+    lives = 4;
 
-    if (deaths <= 2) {
+    if (deaths <= 4) {
       gameRun = true;
     } else {
       gameRun = false;
@@ -269,57 +269,68 @@
 
   if (difficulty == 'hard') { //hard
     totalPlatforms = 4;
-    lives = 2;
+    lives = 5;
 
-    if (deaths <= 1) {
-      gameRun = true;
+    if (deaths <= 4) {
+      gameRun = true
     } else {
       gameRun = false;
     }
   }
 
+  if (deaths >= 3 && lives <= 0) {
+    gameRun = false;
+  } // game end on deaths for easy
+
+
+
 
 
 
   function mainloop() {
-    if (setUp) {
-      player.x = canvas.width / 2 - P_SIZE;
-      pYpos = 0 - P_SIZE;
-      
+    if (gameRun) {
 
-      for (var i = 0; i < totalPlatforms; i++) {
-        makePlatform();
+
+      if (setUp) {
+        player.x = canvas.width / 2 - P_SIZE;
+        pYpos = 0 - P_SIZE;
+
+
+        for (var i = 0; i < totalPlatforms; i++) {
+          makePlatform();
+        }
+        setUp = false;
       }
-      setUp = false;
-    }
-    // score++; // score count up
-    colorRect(0, 0, canvas.width, canvas.height, 'black'); // canvas proportions
-    // colorRect(pXpos, pYpos, P_SIZE, P_SIZE, 'red'); // player proportions
-    player.draw(); // player draw
-    player.Move(); // player movement
+      // score++; // score count up
+      colorRect(0, 0, canvas.width, canvas.height, 'black'); // canvas proportions
+      // colorRect(pXpos, pYpos, P_SIZE, P_SIZE, 'red'); // player proportions
+      player.draw(); // player draw
+      player.Move(); // player movement
 
-    colorText('Score: ' + score, canvas.width * 0.01, 20, '15px century gothic,', 'red'); //score display
-    colorText('Lives: ' + lives, canvas.width * 0.915, 20, '15px century gothic', 'blue'); //lives display
+      colorText('Score: ' + score, canvas.width * 0.01, 20, '15px century gothic,', 'red'); //score display
+      colorText('Lives: ' + lives, canvas.width * 0.915, 20, '15px century gothic', 'blue'); //lives display
 
 
 
-    if (platforms.length > 0) {
-      platforms.forEach(function (platform, i, array) {
-        platform.draw();
-        platform.Move();
-        platform.hit();
-      });
-    } // end if 
+      if (platforms.length > 0) {
+        platforms.forEach(function (platform, i, array) {
+          platform.draw();
+          platform.Move();
+          platform.hit();
+        });
+      } // end if 
 
 
-    if (userName > 10) { // username character limit
-      userName == false;
-    }
+      if (userName > 10) { // username character limit
+        userName == false;
+      }
 
-    if (difficulty != 'easy', 'medium', 'hard') { //runs the false statement so that unrecognised text is rejected 
-      difficultyPass == false;
+      if (difficulty.toLowerCase != 'easy', 'medium', 'hard') { //runs the false statement so that unrecognised text is rejected 
+        difficultyPass == false;
 
-    } else { // gameEnd screen when gameRun = false
+      }
+    } 
+    else { // gameEnd screen when gameRun = false
       colorRect(0, 0, canvas.width, canvas.height, 'black');
       colorText(' Game over ' + userName + ' your score was ' + score, canvas.width * 0.125, canvas.height / 2,
         '17.5px century gothic', 'red');
@@ -335,7 +346,7 @@
 
     const PLAT_SIZE = 20;
     const gap = 100;
-    var platPos = Math.floor(Math.random() * 6) + 1; // 1-7 platform spawn positions
+    var platPos = Math.floor(Math.random() * 7) + 1; // 1-7 platform spawn positions
 
     var platWidth = 70;
     var platHeight = 10;
@@ -343,6 +354,10 @@
     var platXpos = enemyCounter * PLAT_SIZE + gap * enemyCounter;
     // var platXpos = Math.floor(Math.random() * (canvas.width - platWidth));
     var platYspeed = Math.floor(Math.random() * (3 - 1) + 3);
+
+    if (deaths >= 3 && lives <= 0) {
+      gameRun = false;
+    } // game end on deaths for easy
 
     enemyCounter++;
 
