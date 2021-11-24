@@ -244,6 +244,8 @@
   var score = 0;
   var lives = 3;
   var deaths = 0;
+  var maxSpeed = 0;
+  var minSpeed = 0;
 
   var gameRun = true;
   var setUp = true;
@@ -301,11 +303,15 @@
   if (difficulty == 'easy') { //easy 
     totalPlatforms = 7;
     lives = 3;
+    var maxSpeed = 6;
+    var minSpeed = 3;
   }
 
   if (difficulty == 'medium') { //medium
     totalPlatforms = 5;
     lives = 4;
+    var maxSpeed = 7;
+    var minSpeed = 4;
 
     if (deaths <= 4) {
       gameRun = true;
@@ -317,6 +323,9 @@
   if (difficulty == 'hard') { //hard
     totalPlatforms = 4;
     lives = 5;
+    var maxSpeed = 8;
+    var minSpeed = 5;
+
 
     if (deaths <= 4) {
       gameRun = true
@@ -406,7 +415,7 @@
     var platYpos = 0 - PLAT_SIZE;
     var platXpos = enemyCounter * PLAT_SIZE + gap * enemyCounter;
     // var platXpos = Math.floor(Math.random() * (canvas.width - platWidth));
-    var platYspeed = Math.floor(Math.random() * (3 - 1) + 3);
+    var platYspeed = Math.floor(Math.random() * (maxSpeed - minSpeed) + minSpeed);
 
     if (deaths >= 3 && lives <= 0) {
       gameRun = false;

@@ -29,7 +29,7 @@ class Platform { //platform class vars for jumper.html x,y,w,h,c & platYspeed
       this.h = 10; //platform height
       this.x = Math.floor(Math.random() * (canvas.width - this.w)); //randomised platXpos spawn
       // this.xSpeed = Math.floor(Math.random()*(6 - 1) + 1);
-      this.ySpeed = Math.floor(Math.random() * (3 - 1) + 2); //randomised platYspeed 
+      this.ySpeed = Math.floor(Math.random() * (maxSpeed - minSpeed) + minSpeed); //randomised platYspeed 
 
       this.y = 0 - this.h;
     }
@@ -39,7 +39,7 @@ class Platform { //platform class vars for jumper.html x,y,w,h,c & platYspeed
   hit() { //for platform collision of player
 
     if (this.y + this.h > player.y && this.y < player.y + player.h && this.x + this.w > player.x && this.x < player.x + player.w) {
-      // spacePressed = true;
+      spacePressed = true;
       player.y -= player.ySpeed;
       score += 1;
 
