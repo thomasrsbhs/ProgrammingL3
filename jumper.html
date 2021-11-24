@@ -1,6 +1,19 @@
 <!doctype html>
 
 <head>
+  <style>
+    body {
+      background-color: rgb(23, 238, 173);
+      padding: 10px 10px;
+    }
+
+    canvas {
+      display: block;
+      margin: auto;
+    }
+
+  </style>
+
   <title>Doodle who jumps</title>
   <script src="jumper.js"></script>
 </head>
@@ -21,12 +34,15 @@
     setInterval(mainloop, 1000 / 50);
   }
   // player vars
-  var pXpos = 380;
-  var pYpos = 580;
+  var pXpos = 375;
+  var pYpos = 575;
   var pXspeed = 5;
   var pYspeed = 5;
-  const P_SIZE = 20;
-  
+  const P_SIZE = 25;
+  var yVel = 0; //gravity
+  var thrust = -5; // gravity speed
+
+
   // key codes
   const UP_KEY = 87;
   const LEFT_KEY = 65;
@@ -38,12 +54,12 @@
   var rightPressed = false;
   var spacePressed = false;
 
-  var player = new Player(pXpos, pYpos, P_SIZE, P_SIZE, 'red', pXspeed, pYspeed);
+  var player = new Player(pXpos, pYpos, P_SIZE, P_SIZE, 'red', pXspeed, pYspeed, yVel, thrust);
 
-  var setUp = true;
+
 
   function mainloop() {
-  
+
     colorRect(0, 0, canvas.width, canvas.height, 'black'); // bg
     player.drawRect(); // player
     player.playerMove();
@@ -51,12 +67,6 @@
 
 
   function keyPressed(evt) {
-    if (evt.keyCode == UP_KEY) {
-      upPressed = true;
-    }
-    if (evt.keyCode == DOWN_KEY) {
-      downPressed = true;
-    }
     if (evt.keyCode == LEFT_KEY) {
       leftPressed = true;
     }
@@ -69,12 +79,6 @@
   }
 
   function keyReleased(evt) {
-    if (evt.keyCode == UP_KEY) {
-      upPressed = false;
-    }
-    if (evt.keyCode == DOWN_KEY) {
-      downPressed = false;
-    }
     if (evt.keyCode == LEFT_KEY) {
       leftPressed = false;
     }
@@ -84,10 +88,12 @@
     if (evt.keyCode == SPACE_KEY) {
       spacePressed = false;
     }
-  }
+  } // end of func
+
+
 
   function colorRect(x, y, w, h, c) {
     canvasContext.fillStyle = c;
     canvasContext.fillRect(x, y, w, h);
   }
-</script> 
+</script>
