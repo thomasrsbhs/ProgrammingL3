@@ -16,6 +16,7 @@
 
   <title>Doodle who jumps</title>
   <script src="jumper.js"></script>
+  <script src="enemy.js"></script>
 </head>
 
 <body>
@@ -43,6 +44,7 @@
   var thrust = -5; // gravity speed
 
 
+
   // key codes
   const UP_KEY = 87;
   const LEFT_KEY = 65;
@@ -56,14 +58,46 @@
 
   var player = new Player(pXpos, pYpos, P_SIZE, P_SIZE, 'red', pXspeed, pYspeed, yVel, thrust);
 
-
+  var setUp = true;
 
   function mainloop() {
-
+    if (setUp) {
+      for (var i = 0; i < 10; i++) {
+        createEnemy();
+      }
+      setUp = false;
+    }
     colorRect(0, 0, canvas.width, canvas.height, 'black'); // bg
     player.drawRect(); // player
     player.playerMove();
+    
+      if (enemies.length > 0) {
+          enemies.forEach(function (enemy, i, array) {
+            enemy.drawRect();
+            enemy.enemyMove();
+            if(enemy.playerDeath()){
+              console.log('dead');
+            }
+          }); // end foreach
+        } // end if 
   }
+
+  var enemies = [];
+
+   function createEnemy(){
+    // enemy vars
+    var eSize = Math.floor(Math.random() * (40 - 20) + 20);
+    var eYpos = eSize;
+    var eXpos = Math.floor(Math.random() * (canvas.width - eSize));
+    var eXspeed = Math.floor(Math.random() * (12 - 3) + 3);
+    var eYspeed = Math.floor(Math.random() * (12 - 3) + 3);
+
+    // create enemy class with vars
+    var enemy = new Enemy(eXpos, eYpos, eSize, eSize, 'purple', eXspeed, eYspeed);
+    // add enemy to enemies array
+    enemies.push(enemy); 
+  } // end func
+
 
 
   function keyPressed(evt) {
