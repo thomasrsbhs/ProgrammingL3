@@ -52,6 +52,7 @@ class Player { //player class vars for html
 
       if (deaths >= 3 && lives <= 0) {
         gameRun = false;
+
     } // game end on deaths for easy
 
       // this.yVel = this.thrust;
@@ -66,10 +67,30 @@ class Player { //player class vars for html
     }
 
     // if (this.y > canvas.height - this.h) { //stops player falling out the bottom of the screen (Bottom bounce)
-
-    //   this.yVel = thrust;
     //   this.ySpeed = 3;
+    //   this.thrust = 0;
+    //   this.yVel = this.thrust;
+      
     // }
+
+    if (this.y <= 0 + this.h) { // stops player going above screen 
+      this.y += this.ySpeed
+      this.yVel += 0.10;
+      this.ySpeed = 0;
+  } 
+// else { // when not touching top screen run true 
+//       this.ySpeed = this.thrust;
+//       // this.Yspeed = 5;
+//   }
+
+  if (this.y > 0) {
+    this.yVel += 0.10;
+    
+} 
+else {
+    this.yVel = 0.10;
+    // this.Yspeed = 3;
+}
 
   } //end func
 }

@@ -43,10 +43,12 @@ class Platform { //platform class vars for jumper.html x,y,w,h,c & platYspeed
       player.y -= player.ySpeed;
       score += 1;
 
-      if (player.y < 0 + player.h) { // stops player going above screen 
-        player.yVel = 0;
-        player.ySpeed = 0;
-      } else { // when not touching top screen run true 
+      if (player.y < canvas.height + player.h) { // stops player going above screen 
+        ;
+        player.ySpeed = 3;
+        // player.y = 0; 
+      } 
+      else { // when not touching top screen run true 
         player.yVel = player.thrust;
         player.ySpeed = 5;
       }

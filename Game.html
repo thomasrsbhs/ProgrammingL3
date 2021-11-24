@@ -1,0 +1,509 @@
+<!doctype html>
+<html>
+
+<head>
+    <style>
+        body {
+            background-color: powderblue;
+            padding: 10px 10px;
+        }
+
+        h1 {
+            font-family: 'century gothic';
+            color: blue;
+            font-size: 30px;
+            text-align: center;
+        }
+
+        h2 {
+            font-family: 'century gothic';
+            font-size: 20px;
+            text-align: center;
+            color: blue;
+        }
+
+        p {
+            color: red;
+        }
+
+        canvas {
+            display: block;
+            margin: auto;
+        }
+
+        button {
+            padding: 1.5px;
+            background-color: white;
+            border: 2px solid black;
+            color: black;
+            text-align: center;
+            width: 15%;
+            font-size: 15px;
+            font-weight: bold;
+            font-family: 'century gothic';
+            display: block;
+            margin: 10px auto;
+
+        }
+
+
+
+        button:hover {
+            background-color: red;
+        }
+
+    </style>
+</head>
+
+<body>
+    <title>Flight Apparatus Joyride</title>
+    <h1>Dodge the squares</h1>
+
+    <canvas id="gameCanvas" width="400" , height="400"></canvas>
+    <button onClick="location.reload();">Restart</button> <!-- Refresh the page -->
+    <h2>Use spacebar and arrow keys to move</h2>
+    <h2>Blue squares award extra lives</h2>
+
+    <script>
+        var canvas, canvasContext;
+
+        window.onload = function() {
+            canvas = document.getElementById('gameCanvas');
+            canvasContext = canvas.getContext('2d');
+
+            document.addEventListener('keydown', keyPressed);
+            document.addEventListener('keyup', keyReleased);
+
+            setInterval(mainloop, 1000 / 60);
+
+        }
+        //player vars
+        const PLAYER_SIZE = 25;
+        var playerXpos = 215 - PLAYER_SIZE;
+        var playerYpos = 0;
+        var playerXspeed = 5;
+        var playerYspeed = 5;
+
+        //powerup vars
+        const POWER_SIZE = 25;
+        var powerXpos = 400 - POWER_SIZE;
+        var powerYpos = 200 - POWER_SIZE;
+        var powerXspeed = 5;
+        var powerYspeed = 5;
+
+        //enemy vars
+        const ENEMY_SIZE = 25;
+        var enemyXpos = 200 - ENEMY_SIZE;
+        var enemyYpos = 200 - ENEMY_SIZE;
+        var enemyXspeed = 5;
+        var enemyYspeed = 5;
+
+        //key presses
+        var spaceKeyPress = false;
+        var leftKeyPress = false;
+        var rightKeyPress = false;
+        var upKeyPress = false;
+        var downKeyPress = false;
+        //key codes
+        const SPACE_KEY = 32;
+        const LEFT_KEY = 37;
+        const RIGHT_KEY = 39;
+
+        //array
+        var enemies = [];
+        var powers = [];
+
+        //game 
+        var score = 0;
+        var lives = 3;
+        var deaths = 0;
+        var gameRun = true;
+        var settingUp = true;
+        //difficulty vars
+        var totalPowers = 1;
+        var totalEnemies = 4;
+        var maxSpeed = 0;
+        var minSpeed = 0;
+
+
+        //prompts
+        //username prompt
+        var userName = ''; //username text prompt, player enters their name here
+        var userPass = false; //case for false entries in name 
+        while (userPass == false) {
+            userName = prompt("What is your name? Max length 10", "barry");
+            if (userName != null && userName != '') {
+                if (userName.length <= 10) { //text limit at 10, so end screen isn't too big and the name fits in the prompt bar
+
+                    userPass = true;
+                }
+            }
+
+        }
+        // difficulty prompt
+        var difficulty = '';
+        var difficultyPass = false;
+        while (difficultyPass == false) {
+            difficulty = prompt("Select the difficulty: easy, medium, hard", "easy");
+
+            difficulty = difficulty.toLowerCase()
+
+            if (difficulty == 'easy' || difficulty == 'medium' || difficulty == 'hard') {
+                difficultyPass = true; // if statement is compatable with criteria then run as true and game will run
+
+
+            }
+
+            if (difficulty != null && difficulty != '') {
+                difficultyPass = true;
+            }
+
+        } //end of difficulty string 
+
+        // difficulty changes for easy, medium, hard
+
+        if (difficulty == 'easy') { // default 3 lives for easy
+            maxSpeed = 5;
+            minSpeed = 3;
+            totalEnemies = 4;
+            totalPowers = 1;
+
+        }
+        if (difficulty == 'medium') { // 4 lives on medium 
+            maxSpeed = 7;
+            minSpeed = 4;
+            totalEnemies = 4;
+            totalPowers = 1;
+            lives = 4;
+
+            if (deaths <= 4) {
+                gameRun = true;
+            } else {
+                gameRun = false;
+            }
+
+
+        }
+        if (difficulty == 'hard') { // 5  lives on hard due to more enemies
+            maxSpeed = 8.5;
+            minSpeed = 5;
+            totalEnemies = 5;
+            totalPowers = 1;
+            lives = 5;
+
+            if (deaths <= 4) {
+                gameRun = true
+            } else {
+                gameRun = false;
+            }
+
+
+        }
+
+
+
+
+
+
+        function mainloop() {
+            if (gameRun) {
+                colorRect(0, 0, canvas.width, canvas.height, 'black'); //canvas proportions
+                colorRect(playerXpos, playerYpos, PLAYER_SIZE, PLAYER_SIZE, 'gold'); // player
+                colorRect(enemyXpos, enemyYpos, ENEMY_SIZE, ENEMY_SIZE, 'red'); // enemy
+                colorRect(powerXpos, powerYpos, POWER_SIZE, POWER_SIZE, 'blue'); // powerup
+                colorText('Score: ' + score, canvas.width * 0.01, 20, '15px century gothic,', 'white'); //score display
+                colorText('Lives: ' + lives, canvas.width * 0.85, 20, '15px century gothic', 'white'); //lives display
+
+                playerMove();
+                enemyMove();
+                drawEnemy();
+                powerMove();
+
+
+
+
+                if (userName > 10) { // username character limit
+                    userName == false;
+                }
+
+                if (difficulty != 'easy', 'medium', 'hard') {
+                    difficultyPass == false;
+
+                } //if difficulty is entered incorrectly prompt is run false
+
+                if (settingUp) { // enemy max spawning loop 
+                    for (i = 0; i < totalEnemies; i++) {
+                        makeEnemy();
+                    }
+
+                    setUp2();
+                    settingUp = false;
+                }
+
+                if (deaths >= 3 && lives <= 0) {
+                    gameRun = false;
+                }
+
+                if (lives >= 8) { // stops powerUps spawning when lives get too high
+                    powerXspeed = 0;
+                    powerXpos = canvas.width + POWER_SIZE;
+
+                }
+
+
+
+
+
+
+
+
+
+            } //if gameRun end
+            else { // gameEnd screen when gameRun = false
+                colorRect(0, 0, canvas.width, canvas.height, 'black');
+                colorText(' Game over ' + userName + ' your score was ' + score, canvas.width * 0.125, canvas.height / 2, '17.5px century gothic', 'red');
+
+            }
+        } //  end of func
+
+        function setUp2() { // second setup for x pos
+            enemyXpos = canvas.width + ENEMY_SIZE;
+            powerXpos = canvas.width + POWER_SIZE;
+
+        } // end of func
+
+
+        function setup() { // setup func for all enemy objects 
+
+            var enemyYposArray = Math.floor(Math.random() * ((canvas.height - ENEMY_SIZE) - ENEMY_SIZE));
+            var enemyXspeedArray = Math.floor(Math.random() * (maxSpeed - minSpeed) + minSpeed);
+
+            var powerYposArray = Math.floor(Math.random() * ((canvas.height - POWER_SIZE) - POWER_SIZE));
+            var powerXspeedArray = 6;
+
+            var enemy = {
+                enemyXposArray: enemyXposArray,
+                enemyYposArray: enemyYposArray,
+                enemyXspeedArray: enemyXspeedArray,
+
+            }
+
+
+
+            enemies.push(enemy);
+
+        } // end of func
+
+
+
+
+        function keyPressed(evt) { // keydown 
+            if (evt.keyCode == SPACE_KEY) {
+                spaceKeyPress = true;
+            }
+            if (evt.keyCode == RIGHT_KEY) {
+                rightKeyPress = true;
+            }
+            if (evt.keyCode == LEFT_KEY) {
+                leftKeyPress = true;
+
+            }
+
+        } // end of func
+
+        function keyReleased(evt) { // keyup
+            if (evt.keyCode == SPACE_KEY) {
+                spaceKeyPress = false;
+            }
+            if (evt.keyCode == RIGHT_KEY) {
+                rightKeyPress = false;
+            }
+            if (evt.keyCode == LEFT_KEY) {
+                leftKeyPress = false;
+            }
+
+
+        } // end of func
+
+        var yVel = 0.5; // gravity
+        var thrust = -5; // gravity
+        function playerMove() {
+
+            playerYpos += yVel;
+            yVel += .5;
+
+
+            if (leftKeyPress && playerXpos > 0) { //left move left edge stop 
+                playerXpos -= playerXspeed;
+            }
+
+            if (rightKeyPress && playerXpos < canvas.width - PLAYER_SIZE) { // right move
+                playerXpos += playerXspeed;
+                if (playerXpos > canvas.width) { // right edge stop
+
+                    playerYpos = 0 - PLAYER_SIZE - PLAYER_SIZE * 0.6;
+
+                }
+            }
+
+
+            if (spaceKeyPress && playerYpos < canvas.height - PLAYER_SIZE) { // up move and gravity
+                playerYpos -= playerYspeed;
+
+                if (playerYpos < 0 + PLAYER_SIZE) { // stops player going above screen 
+                    yVel = 0;
+                    playerYspeed = 0;
+                } else { // when not touching top screen run true 
+                    yVel = thrust;
+                    playerYspeed = 5;
+                }
+
+                if (playerYpos > 0) {
+                    yVel = thrust;
+                } else {
+                    yVel = 0;
+                }
+            }
+
+            if (playerYpos > canvas.height - PLAYER_SIZE) { // player falling loop and running 
+
+                //                playerYpos = 0 - PLAYER_SIZE;
+                //                playerXpos = canvas.width / 2 - PLAYER_SIZE; //fall loop
+                //                deaths += 1;
+                //                lives += -1;
+
+
+                yVel = thrust; // bounce and running
+                playerYspeed = 5;
+
+            }
+
+
+
+
+        } // end of func
+
+        function makeEnemy() { // stores and pushes enemy vars into an array for enemyMove
+            const ENEMY_SIZE = 25;
+            var enemyYpos = Math.floor(Math.random() * ((canvas.height - ENEMY_SIZE) - ENEMY_SIZE));
+            var enemyXpos = canvas.width + ENEMY_SIZE;
+            var enemyXspeed = Math.floor(Math.random() * (maxSpeed - minSpeed) + minSpeed);
+
+            var enemy = { // enemy vars for array
+                enemyXpos: enemyXpos,
+                enemyYpos: enemyYpos,
+                ENEMY_SIZE: ENEMY_SIZE,
+                enemyXspeed: enemyXspeed
+
+
+            }
+
+
+
+
+            enemies.push(enemy); //pushes enemy vars into array for enemyMove() func
+            //            powers.push(power);
+
+        } // end of func
+
+        function drawEnemy() { // draws enemies on canvas
+            enemies.forEach(function(enemy, i) {
+                colorRect(enemy.enemyXpos, enemy.enemyYpos, enemy.ENEMY_SIZE, enemy.ENEMY_SIZE, 'red');
+
+            });
+
+        }
+
+
+
+
+        function enemyMove() { // moves and spawns enemies through array 
+            enemies.forEach(function(enemy) {
+
+                var totalEnemies = '';
+
+                enemy.enemyXpos -= enemy.enemyXspeed; // x move 
+
+                if (enemy.enemyXpos + enemy.ENEMY_SIZE < 0) { //enemy reset after disappear
+                    enemy.enemyXpos = canvas.width;
+                    enemy.enemyYpos = Math.floor(Math.random() * (canvas.height - enemy.ENEMY_SIZE));
+
+                    enemy.enemyXspeed = Math.floor(Math.random() * (maxSpeed - minSpeed) + minSpeed);
+
+                    score++; //score increases when enemies disappear // dodged
+                }
+
+                if (enemy.enemyYpos + enemy.ENEMY_SIZE > playerYpos && enemy.enemyYpos < playerYpos + PLAYER_SIZE && enemy.enemyXpos + enemy.ENEMY_SIZE > playerXpos && enemy.enemyXpos < playerXpos + PLAYER_SIZE) { // enemy collision w player x and y postitions
+                    deaths++; //increases deaths on collision for gameRun
+                    lives--; //decreases life count so player nows when they may lose
+                    if (deaths >= 3 && lives <= 0) {
+                        gameRun = false;
+                    } // game end on deaths for easy
+
+                    //                      playerXpos = 0 + PLAYER_SIZE; // new starting pos low
+                    //                      playerYpos = canvas.height - PLAYER_SIZE; // new starting pos low
+
+                    playerXpos = canvas.width / 2 - PLAYER_SIZE; // player startPos original
+                    playerYpos = 0 - PLAYER_SIZE; // player startPos original
+                }
+
+            });
+
+        } // end of func
+
+        function powerMove() {
+
+            totalPowers = '';
+            powerXpos -= powerXspeed;
+
+            if (powerXpos + POWER_SIZE < 0) { //enemy reset after disappear
+                powerXpos = canvas.width;
+                powerYpos = Math.floor(Math.random() * (canvas.height - POWER_SIZE));
+                powerXspeed = 6;
+            }
+            //                
+            if (powerYpos + POWER_SIZE > playerYpos && powerYpos < playerYpos + PLAYER_SIZE && powerXpos + POWER_SIZE > playerXpos && powerXpos < playerXpos + PLAYER_SIZE) { // powerup & player collision
+
+                deaths += -1;
+                lives += 1;
+                score += 5;
+                powerXpos = canvas.width;
+                powerYpos = Math.floor(Math.random() * (canvas.height - POWER_SIZE));
+
+                if (deaths >= 3 && lives <= 0) {
+                    gameRun = false;
+                }
+
+
+
+
+
+
+
+            }
+
+        } // end of func
+
+
+
+
+
+        function colorRect(x, y, w, h, c) { //draws images/canvas
+            canvasContext.fillStyle = c;
+            canvasContext.fillRect(x, y, w, h);
+
+        } // end of func
+
+        function colorText(msg, x, y, f, c) { // draws messages (score, end game etc.)
+            canvasContext.fillStyle = c;
+            canvasContext.font = f;
+            canvasContext.fillText(msg, x, y);
+        } // end of func
+
+    </script>
+
+
+
+</body>
+
+</html>
