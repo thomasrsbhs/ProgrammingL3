@@ -85,14 +85,14 @@ class Player { //player class vars for html
 
  //uncomment these for normal small jump height
 
-  if (this.y > 0) {
-    this.yVel += 0.10;
+//   if (this.y > 0) {
+//     this.yVel += 0.10;
     
-}                           
-else {
-    this.yVel = 0.10;
-    // this.Yspeed = 3;
-}
+// }                           
+// else {
+//     this.yVel = 0.10;
+//     // this.Yspeed = 3;
+// }
 
   } //end func
 }

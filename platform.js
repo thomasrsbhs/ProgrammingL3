@@ -39,7 +39,7 @@ class Platform { //platform class vars for jumper.html x,y,w,h,c & platYspeed
   hit() { //for platform collision of player
 
     if (this.y + this.h > player.y && this.y < player.y + player.h && this.x + this.w > player.x && this.x < player.x + player.w) {
-      spacePressed = true;
+      // spacePressed = true;
       player.y -= player.ySpeed;
       score += 1;
 
